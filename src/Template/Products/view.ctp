@@ -64,33 +64,34 @@ debug(  $this->request->session()->write('itemsid',$items_id));
 
 // ...
 
- // $(document).ready(function(){
- //        $('#bn_cart').click(function(event){
- //          var form_data = $(this).serialize();
- //          var hidden_value = $('[name="id"]').val();
- //          var csrfToken = <?php echo(json_encode($this->request->getParam('_csrfToken'))) ?>;
- //               //alert("your form data "+csrfToken);
- //              event.preventDefault();
- //              $.ajax({
- //                headers: {
- //                      'X-CSRF-Token': csrfToken },
- //
- //                  url:'../addit',
- //                  type:'POST',
- //                  data : hidden_value,
- //                  success:function(result){
- //                    console.log(result);
- //                    //  $("#result").text(result);
- //                  },
- //
- //                  error:function(error){
- //
- //                    alert('error ='+(error.Message));
- //                  }
- //          });
- //
- //        });
- //    });
+ $(document).ready(function(){
+        $('#bn_cart').click(function(event){
+          var form_data = $(this).serialize();
+          var hidden_value = $('[name="id"]').val();
+          var csrfToken = <?php echo(json_encode($this->request->getParam('_csrfToken'))) ?>;
+               //alert("your form data "+csrfToken);
+              event.preventDefault();
+              $.ajax({
+                headers: {
+                      'X-CSRF-Token': csrfToken },
 
-	//	});
+                  url:'../addit',
+                  type:'POST',
+                  data : hidden_value,
+                  dataType:'json',
+                  success:function(result){
+                    console.log(result);
+                    //  $("#result").text(result);
+                  },
+
+                  error:function(error){
+
+                    alert('error ='+(error.Message));
+                  }
+          });
+
+        });
+    });
+
+
 </script>

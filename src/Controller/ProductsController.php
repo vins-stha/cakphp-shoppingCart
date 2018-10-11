@@ -28,31 +28,25 @@ class ProductsController extends AppController
        }
 
 function ajaxTest(){
-  echo "hello from ajaxTest product contorller";
+     $mycount = (new CartsController())->getCount();
+        echo "<br>my count is from addti prodcut controller ".$mycount;
 }
 public function addit() {
   $this->render = false;
-    $table =  $this->loadModel('Carts');
-       if ($this->request->is('post')) {
+  $table =  $this->loadModel('Carts');
+     if ($this->request->is('post')) {
          $id = $this->request->data['id'];//retrieve the id of the product
         // debug($this->Products->get($id));//retrieve the product details
         // $this->Carts->addProduct($this->Products->get($id));
-   $result = (new CartsController())->addinTable($id);
-   $mycount = (new CartsController())->getCount();
-   echo "<br>my count is from addti prodcut controller ".$mycount;
-    //$this->Carts->addProduct($id);
-
-          //     $this->Cart->addToCart($id);
-               //  // echo "1.".$this->request->data['id'];
-                //$this->Cart->addProduct($this->request->data['Cart']['product_id']);
-           }else{
-            echo "else";
-          //  $this->Carts->hello();
-            debug($this->request->get($id));
-           }
-           //echo getCount();
-           return $mycount;
-       }
+       $result = (new CartsController())->addinTable($id);
+       $mycount = (new CartsController())->getCount();
+   echo "<br>total number of items is <b> ".$mycount."</b>";
+             }else{
+                echo "else";
+                debug($this->request->get($id));
+              }
+           return json_encode($mycount);
+ }
 
 #######################33333
 public function addTCart($id) {

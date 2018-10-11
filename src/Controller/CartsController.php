@@ -13,112 +13,41 @@ class CartsController extends AppController {
       $this->loadComponent('RequestHandler');
   }
 
-
 public function addinTable($id){
-    echo $id. "<br>from carts corntroller ";
-    $this->loadModel('Carts');
-
+      $this->loadModel('Carts');
+       $this->autoRender = false;
     /////////inserting into the cart table//////////7
       $item = $this->Products->get($id);
       $session = $this->request->session();
     //    $session->write('Cart.itemsid',$id2);
       $allProducts = $session->read('Cart');
-      echo " count is from addinTable carts table ".count($allProducts);
+      // echo " count is from addinTable carts table ".count($allProducts);
       $count = count($allProducts);
   if(null!=$allProducts){
-        echo "<br>if(allProducts is not null)<br>";
-        echo "<b><br> no of items in cart ".$count;
-        debug(array_search($id,array_column($allProducts, 'itemid')));
-      if(array_search($id,array_column($allProducts, 'itemid')) !== false){
+        // echo "<br>if(allProducts is not null)<br>";
+        // echo "<b><br> no of items in cart ".$count;
+        if(array_search($id,array_column($allProducts, 'itemid')) !== false){
       //  if(array_search($id,array_column($allProducts, 'itemid'))){
             //if the id is already in list
-            echo "<br><b>ITEM Is IN the list already</b>";
-            $key = array_search($id,array_column($allProducts, 'itemid'));
-            echo "<br> key is ", $key;
-           $newqty = debug($allProducts[$key]['qty']);
-
-            debug($allProducts[$key]['qty']++);
+              $key = array_search($id,array_column($allProducts, 'itemid'));
+              $newqty = debug($allProducts[$key]['qty']);
+              $allProducts[$key]['qty']++;
+              $session->write('Cart',$allProducts);
+              debug( $session->read('Cart'));
+        }
+        else{
+          // echo"<br><b>The id is not found but cart is not empty</b>";
+            $allProducts[] = array('itemid'=>$id,'qty'=> 1);
             $session->write('Cart',$allProducts);
             debug( $session->read('Cart'));
         }
-        else{
-          echo"<br><b>The id is not found but cart is not empty</b>";
-            $allProducts[] = array('itemid'=>$id,
-                                    'qty' => 1
-                                  );
-            debug( $session->read('Cart'));
-        }
-
-        ///////trial goes here///////7
-        // for($i=1;$i<=count($allProducts);$i++){
-        //     debug($allProducts[$i]['product']);
-        //     echo"product id ".$allProducts[$i];
-        //     if($allProducts[$id]== $id){
-        //       $allProducts[$id]['qty'] = $allProducts[$id]['qty'] +1;
-        //     }else{
-        //       $allProducts[$id]= $id;
-        //       $allProducts[$id]['qty'] = 1;
-        //
-        //     }
-        // }
-        //   $session->write('Cart',$allProducts);
-        /////echo "we counted to ".count($session->read('Cart.qty'));////////
-        /*****************************/
-        // if(array_key_exists($id,$allProducts))
-        //   {
-        //     echo "<br> id is repeatedl<br>";///does the item id exists already?
-        //             //if yes
-        //     debug(array_keys($session->read('Cart')));
-        // //  debug($session->read('Cart'));//nooooo
-        //     debug($session->read('Cart.'.$id.'.qty'));
-        //           //  debug($allProducts[$id]++);//nooooo
-        //        debug($allProducts[$id]['qty']+=1);//not required
-        //             echo " <br>your qty is ".$qty;
-        //             debug($allProducts);
-        //
-        //   }else{///if new id is  found
-        //           echo "<br> <b>NEW </b>id dtected with id <b>:<br>".$id."</b>";
-        //           $allProducts['itemid'] = $id;
-        //           debug(  $allProducts['itemid'] );
-        //           $allProducts[$id]['qty'] = 1;
-        //           debug(  $allProducts[$id]['qty'] );
-        //           debug( $allProducts->$id['qty']);
-        //           $session->write('Cart',$allProducts);
-        //           debug($session->read('Cart'));
-        //           ///4lines down is req///
-        //           // debug($allProducts[$id]['itemid'] = $id);
-        //           // $amount = 1;
-        //           // $session->write('Cart.'.$id.'.qty',$amount);
-        //           // $allProducts[$id]['qty'] = 1;
-        //         // $session->write('Cart.itemsid', array_push($id));//not req.
-        //       }
-              /**************/
     }
      else{///////////if cart is empty at first
        $count = 0;
-         echo"<br><b>The  cart is  empty</b>";
-       $allProducts[] = array('itemid'=>$id,
-                               'qty' => 1
-                             );
-                             $qty = 1;
-          debug($allProducts[0]);
-          debug($allProducts);
-          debug($allProducts[0]['itemid']);
-
-        //  if(array_search($id,array_column($allProducts, 'itemid'))==true){echo "hello";}
+           $allProducts[] = array('itemid'=>$id, 'qty' => 1 );
           $session->write('Cart',$allProducts);
-
-            debug( $session->read('Cart'));
-          return $count++;
-        //  $session->write('Cart.qty',1);
-
-            echo ( "<br>Initiating because cart is empty ".
-            debug( $session->read('Cart')));
-
+          debug( $session->read('Cart'));
           }
-          ////////lets count qty////////77
-                  /////////////
-          $session->write('Cart',$allProducts);//save the item
         //  $this->Carts->getCount();
         //////////////////delete below this///7
       // $article = $this->Carts->newEntity();
@@ -140,11 +69,19 @@ public function addinTable($id){
   //    $this->request->session()->read('Cart');
 
   return count($allProducts);
-  }
+  getCount();
+}//end of function
+
   public function getCount(){
+    echo "hello from getCount<br>";
+    $this->autoRender = false;
     $session = $this->request->session();
     $allProducts = $session->read('Cart');
-    return count($allProducts);
+    $qtyCount = 0;
+    for($i=0;$i< count($allProducts); $i++){
+      $qtyCount +=$allProducts[$i]['qty'];
+    }
+    return $qtyCount;
     // debug($allProducts);
   }
 
