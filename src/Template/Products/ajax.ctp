@@ -51,6 +51,19 @@ debug(  $this->request->session()->write('itemsid',$items_id));
 </div>
 </div>
 <script>
+// $(document).ready(function(){
+//   $('button').click(function(e){
+//     e.preventDefault();
+//       $.post($(this).attr('url'),$(this).serialize(),function(){
+//     alert('Add clicked 2');
+//   });id', ['type' => 'hidden', 'value' =
+//       alert('Add clicked');
+//   });//click
+// });//ready
+//
+
+
+// ...
 
  $(document).ready(function(){
         $('#bn_cart').click(function(event){
@@ -68,26 +81,27 @@ debug(  $this->request->session()->write('itemsid',$items_id));
                     },
                   url:'../addit',
                   type:'POST',
-                  encode:true,
                 //  data : hidden_value,
                   data: { id : id },
                   dataType:'json',
-            //       beforeSend: function(xhr)
-            // {
-            //     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            // },
-            success:function(data, status, jqxhr){
-            var respons = data;
+                  beforeSend: function(xhr)
+            {
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            },
+                  success:function(xhr, response){
+                    var respons = response;
+                    console.log("conosle success says "+ (respons.result));
+                    alert("success"+respons.result);
+                    // for(var property in result) {
+                    // alert(property + "====" + result[property]);
+                    // var jsonStr = JSON.stringify(result);
+                      // alert("stringified "+jsonStr);
 
+                },
 
-          console.log("conosle success says ",(respons));
-          alert("success",respons);
-
-        },
-              error:function(xhr, e,etype,response){
+                  error:function(xhr, e,etype,response){
                     //alert("<br>error<br>"+ error.responseText.message);
-                    alert("response = "+ response +"xhr = "+ xhr + "   e = " + e + "  etype = "+ etype);
-                    console.log(" response =" + response + "error ="+ e +"xhr = "+ xhr + "  etype = "+ etype );
+                    alert("response = "+ response +"xhr = "+ xhr + "  e = " + e + "  etype = "+ etype);
                     //  $("#result").html(error.Message);
                     // alert('error ='+(error.Message));
                   }

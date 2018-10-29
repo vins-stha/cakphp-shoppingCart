@@ -1,11 +1,4 @@
-<?php
-/**
- * @var \App\View\AppView $this
- * @var \App\Model\Entity\Product[]|\Cake\Collection\CollectionInterface $products
- */
- session_start();
-$this->session->start();
-?>
+
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
@@ -25,8 +18,8 @@ $this->session->start();
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($products as $product): ?>
-
+            <?php   foreach ($products as $product): ?>
+            
             <div class="col-sm-6 col-md-4">
               <div class="thumbnail">
                 <img src="cinqueterre.jpg" class="img-circle" alt="" style="width:100px; height:100px;">
@@ -45,22 +38,7 @@ $this->session->start();
                <!-- <?php echo $this->Form->hidden('product_id',array('value'=>$product->id));?> -->
              </p>
             </div>
-            <!-- <script>
-            $(document).ready(function(){
-              $('button').click(function(e){
-                e.preventDefault();
-                  $.post($(this).attr('action'),$(this).serialize(),function(data){
-                alert('Add clicked 2');
-              });
 
-                  alert('Add clicked');
-              });//click
-            });//ready -->
-
-<!--
-
-            	//	});
-            </script>
 <!----------------------------------------------------------------------------------------------------------------------------------> -->
 <!-- <tr>
     <td><?= $this->Number->format($product->id) ?></td>

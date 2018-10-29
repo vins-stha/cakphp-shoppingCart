@@ -13,8 +13,24 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-$cakeDescription = 'CakePHP: the rapid development php framework';
 ?>
+<?php
+/**
+ * @var \App\View\AppView $this
+ * @var \App\Model\Entity\Product[]|\Cake\Collection\CollectionInterface $products
+ */
+
+$session = $this->request->session();
+$allProducts =$session->read('Cart');
+
+$qtyCount = 0;
+for($i=0;$i< count($allProducts); $i++){
+  $qtyCount +=$allProducts[$i]['qty'];
+}
+echo "echo". $qtyCount;
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,10 +43,10 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->Html->meta('icon') ?>
 
 
-    <?= $this->Html->css('bootstrap.min.css'); ?>
+      <?= $this->Html->css('bootstrap.min.css'); ?>
      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <?=$this->Html->css('base.css') ?>
-    <?= $this->fetch('meta') ?>
+     <?=$this->Html->css('base.css') ?>
+     <?= $this->fetch('meta') ?>
      <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
@@ -41,41 +57,37 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <nav class="navbar navbar-inverse">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Apple Shopping Cart</a>
+          <div>
+            <?= $this->Form->create('search',array('controller'=>'products','action'=>'search')); ?>
+            <?php  echo $this->Form->control('search', array('label' => false,
+               "class" => "form-control input-medium", "placeholder" => __('Search example iphone 6')));?>
+               <?php echo $this->Form->submit('search'); ?>
+               <?php echo $this->Form->submit('Apply Filters',array('id'=>'filters')); ?>
+               <?php echo "<div id ='hide'> <span class ='navbar-brand' ></style></span>";?>
+                <?php  echo $this->Form->control('Max Price', array('label' => false,'id' =>'max',
+                          "class" => "form-control input-medium", "placeholder" => __('Search by max price')));?>
+                <?php  echo $this->Form->control('Minimum Price', array('label' => false,'id'=>'min',
+                        "class" => "form-control input-medium", "placeholder" => __('Search by minimum  price')));?>
+                <?php echo "</div>" ?> </div>
+          </div>
+          <?php echo $this->Html->link('Apple Shopping Cart','/products/index',['class' => 'navbar-brand']);?>
         </div>
         <ul class="nav navbar-nav navbar-right">
           <!-- <?= $this->Form->create('search',array('controller'=>'products','action'=>'search')); ?> -->
-        <?php  echo $this->Form->control('search', array('label' => false,
-           "class" => "form-control input-medium", "placeholder" => __('Search example iphone 6')));?>
-           <?= $this->Form->button('submit');?>
-
-          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
 
           <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
           <?php echo $this->Html->link('<span class="glyphicon glyphicon-shopping-cart"></span>
-                                        Shopping Cart<span class="badge" id="cart-counter">0</span>',
-                                      array('controller'=>'carts','action'=>'view'),array('escape'=>false));?>
+                                        Shopping Cart<span class="badge" id="cart-counter">'.$qtyCount.
+                                        '</span>',
+                                      array('controller'=>'products','action'=>'carts'),array('escape'=>false));?>
 
         </ul>
       </div>
     </nav>
 <?= $this->Flash->render() ?>
 </div>
-    <!-- <nav class="top-bar expanded" data-topbar role="navigation">
-        <ul class="title-area large-3 medium-4 columns">
-            <li class="name">
-                <h1><a href=""> //$this->fetch('title') ?></a></h1>
-            </li>
-        </ul>
-        <div class="top-bar-section">
-            <ul class="right">
-                <li><a target="_blank" href="https://book.cakephp.org/3.0/">Documentation</a></li>
-                <li><a target="_blank" href="https://api.cakephp.org/3.0/">API</a></li>
-            </ul>
-        </div>
-    </nav>-->
-
-    <div class="container clearfix">
+  <div class="container clearfix">
         <?= $this->fetch('content') ?>
     </div>
     <footer>
@@ -83,4 +95,14 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?php echo $this->Html->script('bootstrap.min'); ?>
 </body>
 </html>
-<!--  -->
+<script>
+$(document).ready(function(){
+    $("#hide").hide();
+
+$("#filters").click(function(e){
+    $("#hide").toggle();
+     e.preventDefault();
+});
+
+});
+</script>

@@ -9,46 +9,65 @@ use Cake\ORM\TableRegistry;
 use Cake\ORM\Table;
 use  App\Controller\Event;
 use Cake\Http\Session\DatabaseSession;
+use Cake\Datasource\ConnectionManager;
+header('Content-Type: application/json');
  // mention at top
 class ProductsController extends AppController
 {
-
-//  public $components = array('Auth');
   public $uses = array('Product','Cart');
-
   public function initialize(){
        parent::initialize();
        $this->loadComponent('RequestHandler');
-        //$this->Auth->allow('*');
-      //   debug(get_included_files());
-      //   $this->Auth->allow(['ajaxTest', 'index']);
-         // $this->Auth->allow();
-
-  //    $table =  $this->loadModel('Carts');
        }
-
+  ////////////////////////////////////////////////////  ////////////////////////////////////////////////////
 function ajaxTest(){
-     $mycount = (new CartsController())->getCount();
-        echo "<br>my count is from addti prodcut controller ".$mycount;
+//  //header('Content-type: application/json;charset=utf-8');
+$mycount = (new CartsController())->getCount();
+echo $mycount;
+// $array = array( 'name' =>'test');
+// echo json_encode($array);
+exit;
+
 }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////  ////////////////////////////////////////////////////
 public function addit() {
-  $this->render = false;
+  //header('Content-type: application/json;charset=utf-8');
+
+  $this->autoRender = false;
   $table =  $this->loadModel('Carts');
-     if ($this->request->is('post')) {
-         $id = $this->request->data['id'];//retrieve the id of the product
-        // debug($this->Products->get($id));//retrieve the product details
-        // $this->Carts->addProduct($this->Products->get($id));
+  if ($this->request->is('post')) {
+      $id = $this->request->data['id'];//retrieve the id of the product
+        //debug($id = $this->request->data);
+      //  debug($this->Products->get($id));//retrieve the product details
+      // $this->Carts->addProduct($this->Products->get($id));
+       // $result = (new CartsController())->addinTable($id);
        $result = (new CartsController())->addinTable($id);
+
        $mycount = (new CartsController())->getCount();
-   echo "<br>total number of items is <b> ".$mycount."</b>";
-             }else{
-                echo "else";
-                debug($this->request->get($id));
-              }
-           return json_encode($mycount);
+       // $result = array('count' =>$mycount);
+       // header('content-type:application/json');
+       // echo json_encode($result);
+
+
+      }else{
+                echo "<br>else<br>";
+            }
+
+          echo  $mycount;
+             exit;
+
+
+      //   $this->response->type('json');
+    //  $this->set('_serialize', array('result'));
+         //$resultJ = json_encode(array('result' => array('count' => $mycount)));
+//         $this->response->body(json_encode($data));
+
+      //  $this->response->body($resultJ);
+  //       echo"echoing\n". $this->response;
+      //  return $mycount;
  }
 
-#######################33333
+#######################33333  ////////////////////////////////////////////////////
 public function addTCart($id) {
   echo $id;
   $products_in_cart_table = $this->read();
@@ -74,20 +93,9 @@ public function addTCart($id) {
     debug($session);
     debug($_SESSION['Cart']);
     echo $count;
-  }
-    //  $allProducts = $this->readProductinCart();
-      // echo "all product is ".$allProducts;
-      // if (null!=$allProducts) {
-      //     if (array_key_exists($id, $allProducts)) {
-      //         $allProducts[$id]++;
-      //     } else {
-      //         $allProducts[$id] = 1;
-      //     }
-      // } else {
-      //     $allProducts[$id] = 1;
-      // }
-      // $this->saveProduct($allProducts);
-  }
+    }
+  }//End of addtoCart
+  ////////////////////////////////////////////////////
   public function destroy(){
     $session = $this->request->session();
     $session->read('Cart');
@@ -95,18 +103,20 @@ public function addTCart($id) {
       echo "SUCCESSFULLY DESTROYED SESSION";
     }
   }
+    ////////////////////////////////////////////////////
   public function readSession(){
       $session = $this->request->session();
-      debug($session->read('Cart'));
+      $session->read('Cart');
+      $mycount = (new CartsController())->getCount();
+      return json_encode($mycount);
+
   }
-
-
+    ////////////////////////////////////////////////////
   /*
    * read cart data from session
    */
   public function readProductinCart() {
     $data =array();
-
     // echo "this->Session->read('Cart')".$this->request->Session()->check('Cart');
       if(!empty($_SESSION['Cart'])) {
         echo "note empty";
@@ -119,23 +129,20 @@ public function addTCart($id) {
     //  return $session->read('cart');
   }
   //count number of products in cart
-  public function search (){
-      echo "hello";
-
-  }
-
+  ////////////////////////////////////////////////////
   public function getCount() {
+  $table =  $this->loadModel('Carts');
+  $mycount = (new CartsController())->getCount();
   $allProducts = $this->readProduct();
 
   if (count($allProducts)<1) {
       return 0;
   }
-
   $count = 0;
   foreach ($allProducts as $product) {
       $count=$count+$product;
   }
-
+  echo " my count is ".$mycount;
   return $count;
 }
   //save product in cart in session
@@ -144,31 +151,61 @@ public function addTCart($id) {
     return $session->write('cart',$data);
 
   }
-########################3
+########################3  ////////////////////////////////////////////////////
     public function index()//list the products from the table
     {
+        $this->paginate($this->Products);
         $products = $this->paginate($this->Products);
         $this->set(compact('products'));
     }
 
     public function view($id = null)
+
       {
         $product = $this->Products->get($id, [
               'contain' => []
           ]);
          $this->set('product', $product);
         }
-    public function addToCart2($id)
 
-    {    $this->autoRender = false;
-         $item = $this->Products->get($id);
-          echo "hello your product  is ".$item->name;
+public function carts(){
+    $session = $this->request->session();
+		$allProducts = $session->read('Cart');
+		//	debug($allProducts); debug(count($allProducts));
+		$totalItems =(new CartsController())->getCount();
+			//debug($totalItems);
+		$itemIds = array();
+		$products = array();
+    // if(!$totalItems){
+    //   $this->Flash->error(__('Shopping cart is empty !! Please add some '));
+    // }
+    for($i=0;$i<count($allProducts);$i++){
+			  $qty=$allProducts[$i]['qty'];
+
+			  if($qty==1){
+
+				//  $itemIds[]= $allProducts[$i]['itemid'];
+				 $itemIds[]= $allProducts[$i]['itemid'];
+			//	echo "  ".$allProducts[$i]['itemid']."<br>";
+
+			  }else{
+				for($j=0;$j<$qty;$j++){
+					$itemIds[]= $allProducts[$i]['itemid'];
+			//	  echo "  ".$allProducts[$i]['itemid']."<br>";
+
+			  }//for j
+			  }//else
+		  }//for i
+      for($i=0; $i<count($itemIds); $i++){ //to check if all itemsid are innnnnnside
+		  print_r($itemIds[$i]);
+		  echo "<br>";
+		  $products[$i] = $this->Products->get($itemIds[$i], ['contain' => []]);
+		// $products[] = $this->Products->get($itemIds[$i], ['contain' => []]);
+		  }
+      if($this->set('cartProducts',$products)){echo "successful"; }else{ echo "unscucessful";}
+        $this->set(compact('product'));
+
     }
-    public function additnow($id){
-      echo $id;
-
-    }
-
     /**
      * Add method
      *
@@ -213,6 +250,42 @@ public function addTCart($id) {
         $this->set(compact('product'));
     }
 
+    public function search(){
+        $this->loadModel('Products');
+        $searchData = $this->request->getData();
+        //  debug($searchData);
+        $item = $searchData['search'];
+        $maxPrice =(float) $searchData['Max_Price'];
+        $minPrice =(float) $searchData['Minimum_Price'];
+      //  debug($searchData);
+        if($minPrice >$maxPrice){
+          $tempPrice = $minPrice;
+          $minPriceTemp = $maxPrice;
+          $maxPrice = $tempPrice;
+          }
+        if(!$searchData){ echo "blank";}
+        if(!$minPrice){ $minPrice = 0;}
+         if(!$maxPrice){
+           $products = $this->Products->find()
+                                        ->select(['name','price'])
+                                        ->where(['name LIKE' =>"%". $item. "%"])
+                                        ->toList();
+         }else{ //echo "else";
+           if($minPrice >$maxPrice){
+             $tempPrice = $minPrice;
+             $minPriceTemp = $maxPrice;
+             $maxPrice = $tempPrice;
+             }
+             $products = $this->Products->find()
+                                          ->select(['name','price'])
+                                          ->where(['name LIKE' =>"%". $item. "%",
+                                                    'Products.price <='=> $maxPrice,
+                                                    'Products.price >='=>$minPrice])
+                                          ->toList();
+           }
+
+    $this->set(compact('products'));
+  }
     /**
      * Delete method
      *
@@ -229,8 +302,66 @@ public function addTCart($id) {
         } else {
             $this->Flash->error(__('The product could not be deleted. Please, try again.'));
         }
-
         return $this->redirect(['action' => 'index']);
     }
+
+/////////////////////////Extra !!!///////////////////////////////////////////////////////////////
+        public function search2 (){
+
+          $this->loadModel('Products');
+    //     $this->autoRender = false;
+         $connection = ConnectionManager::get('default');
+
+         $searchData = $this->request->getData();
+         $item = $searchData['search'];
+         $maxPrice =(float) $searchData['Max_Price'];
+         $minPrice =(float) $searchData['Minimum_Price'];
+         debug($searchData);
+         if($minPrice >$maxPrice){
+           $tempPrice = $minPrice;
+           $minPriceTemp = $maxPrice;
+           $maxPrice = $tempPrice;
+           }
+         if(!$searchData){ echo "blank";}
+         if(!$minPrice){ $minPrice = 0;}
+         if(!$maxPrice){
+           // $results = $connection
+           //          ->newQuery()->select('products.name as Name, products.price as Price, products.image as Image')
+           //                      ->from ('products')
+           //                      ->where(['products.name LIKE'=>"%".$item."%"])
+           //                      ->execute()
+           //                      ->fetchAll('assoc');
+           $results = $this->Products->find(['all',
+                            'conditions' =>['Products.name LIKE ' =>"%".$item."%"
+                          ]
+
+           ]);
+                                debug($results);
+         }else{ echo "else";
+           if($minPrice >$maxPrice){
+             $tempPrice = $minPrice;
+             $minPriceTemp = $maxPrice;
+             $maxPrice = $tempPrice;
+             }
+           debug($searchData);
+
+           // $results = $connection
+           //          ->newQuery()->select('products.name as Name, products.price as Price, products.image as Image')
+           //                      ->from ('products')
+           //                      ->where(['products.name LIKE'=>"%".$item."%",
+           //                                'Products.price <='=> $maxPrice,
+           //                                'Products.price >='=>$minPrice
+           //                              ])
+           //                      ->execute()
+           //                      ->fetchAll('assoc');
+                                debug($results);
+
+         }//END OF ifelse
+      //   $this->set('searchResults',($results));
+
+         $this->set('results', $results);
+         //$this->set('_serialize','results');
+      }//END OF SEARCH
+
 
 }
