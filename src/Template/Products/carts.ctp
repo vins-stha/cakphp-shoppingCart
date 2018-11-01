@@ -6,11 +6,22 @@
  */
 
 ?>
-
+<nav class="large-3 medium-4 columns" id="actions-sidebar">
+    <ul class="side-nav">
+        <li class="heading"><?= __('Actions') ?></li>
+		<?php if($cartProducts) {
+		   
+       echo $this->Html->link('Empty the basket',"/carts/emptyCart/",['class'=>'btn btn-danger']);
+     }else{
+      echo $this->Html->link('Shopping cart is empty !! Please add some',"/products/",['class'=>'btn btn-success']);
+	  
+     }
+       ?>
+       
+    </ul>
+</nav>
 <div class="products view large-9 medium-8 columns content">
-  <?php echo "number of carts products =".count($cartProducts);
-        print_r($cartProducts[3]->name);
-  ?>
+  <!-- <?php echo "number of carts products =".count($cartProducts); ?> -->
 
     <?php foreach ($cartProducts as $product): ?>
       <div class="col-sm-6 col-md-4">
@@ -25,18 +36,13 @@
         </div>
         <p>
          <?php echo $this->Form->create(null);?>
-         <?php echo $this->Html->link('Remove from Cart',['controller'=>'carts','action' =>'removeitem', $product->id]);?>
+         <?php echo $this->Html->link('Remove',['controller'=>'carts','action' =>'removeitem', $product->id],['class'=>'btn btn-danger']);?>
          <?php echo $this->Form->end();?>
 
        </p>
         </div>
       <?php endforeach ?>
-       <?php if($cartProducts) {
-       echo $this->Html->link('Empty the basket',"/carts/emptyCart/");
-     }else{
-      echo 'Shopping cart is empty !! Please add some ';
-     }
-       ?>
+       
 
 </div>
 </div>

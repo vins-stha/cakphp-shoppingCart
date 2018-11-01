@@ -27,8 +27,6 @@ $qtyCount = 0;
 for($i=0;$i< count($allProducts); $i++){
   $qtyCount +=$allProducts[$i]['qty'];
 }
-echo "echo". $qtyCount;
-
 ?>
 
 <!DOCTYPE html>
@@ -77,9 +75,8 @@ echo "echo". $qtyCount;
             <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
 
           <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-          <?php echo $this->Html->link('<span class="glyphicon glyphicon-shopping-cart"></span>
-                                        Shopping Cart<span class="badge" id="cart-counter">'.$qtyCount.
-                                        '</span>',
+          <?php echo $this->Html->link('<span class="glyphicon glyphicon-shopping-cart">'.$qtyCount.'</span>
+                                        Shopping Cart<span class="badge" id="cart-counter">'.$qtyCount.'</span>',
                                       array('controller'=>'products','action'=>'carts'),array('escape'=>false));?>
 
         </ul>

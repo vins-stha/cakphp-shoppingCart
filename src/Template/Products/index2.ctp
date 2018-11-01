@@ -7,9 +7,18 @@
 </nav>
 <div class="products index large-9 medium-8 columns content">
     <h3><?= __('Products') ?></h3>
-      <table cellpadding="0" cellspacing="0">
+    <table cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('name') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('price') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('image') ?></th>
+                <th scope="col" class="actions"><?= __('Actions') ?></th>
+            </tr>
+        </thead>
         <tbody>
-          <?php   foreach ($products as $product): ?>
+            <?php   foreach ($products as $product): ?>
             
             <div class="col-sm-6 col-md-4">
               <div class="thumbnail">
@@ -23,11 +32,14 @@
               <p>
                <?php echo $this->Form->create(null, ['controller'=>'products','action'=>'addit']);?>
                <input type='hidden' value='<?php echo($product->id);?>'name='productId'/>
-                        <?php echo $this->Form->end();?>
+               <?php echo $this->Form->button('Add to cart now',array('id'=>'Add_to_cart'));?>
+               <?php echo $this->Form->input('id', ['type' => 'hidden', 'value' => $product->id]); ?>
+               <?php echo $this->Form->end();?>
+               <!-- <?php echo $this->Form->hidden('product_id',array('value'=>$product->id));?> -->
              </p>
             </div>
 
-<!----------------------------------------------<button class="bn-large" id="bn_cart">Add to Cart</button>----------------------------->
+<!----------------------------------------------------------------------------------------------------------------------------------> -->
 <!-- <tr>
     <td><?= $this->Number->format($product->id) ?></td>
     <td><?= h($product->name) ?></td>
@@ -59,4 +71,3 @@
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-

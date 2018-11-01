@@ -31,8 +31,6 @@ exit;
 }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////  ////////////////////////////////////////////////////
 public function addit() {
-  //header('Content-type: application/json;charset=utf-8');
-
   $this->autoRender = false;
   $table =  $this->loadModel('Carts');
   if ($this->request->is('post')) {
@@ -42,29 +40,15 @@ public function addit() {
       // $this->Carts->addProduct($this->Products->get($id));
        // $result = (new CartsController())->addinTable($id);
        $result = (new CartsController())->addinTable($id);
-
-       $mycount = (new CartsController())->getCount();
-       // $result = array('count' =>$mycount);
-       // header('content-type:application/json');
-       // echo json_encode($result);
-
-
-      }else{
-                echo "<br>else<br>";
+       debug($result);
+       //$mycount = (new CartsController())->getCount();
+    }
+    else{
+            $this->flash->error('Something went wrong !');
             }
+  echo  $result;
+  exit;
 
-          echo  $mycount;
-             exit;
-
-
-      //   $this->response->type('json');
-    //  $this->set('_serialize', array('result'));
-         //$resultJ = json_encode(array('result' => array('count' => $mycount)));
-//         $this->response->body(json_encode($data));
-
-      //  $this->response->body($resultJ);
-  //       echo"echoing\n". $this->response;
-      //  return $mycount;
  }
 
 #######################33333  ////////////////////////////////////////////////////
@@ -158,9 +142,8 @@ public function addTCart($id) {
         $products = $this->paginate($this->Products);
         $this->set(compact('products'));
     }
-
+########################3  ////////////////////////////////////////////////////
     public function view($id = null)
-
       {
         $product = $this->Products->get($id, [
               'contain' => []
@@ -168,44 +151,53 @@ public function addTCart($id) {
          $this->set('product', $product);
         }
 
-public function carts(){
-    $session = $this->request->session();
+public function carts()
+{
+		$session = $this->request->session();
 		$allProducts = $session->read('Cart');
-		//	debug($allProducts); debug(count($allProducts));
+        //debug(count($allProducts));//count of items types
 		$totalItems =(new CartsController())->getCount();
-			//debug($totalItems);
+    $totalItems = $totalItems[0]['count'];//total count of all of different items
+      //  debug($totalItems);
 		$itemIds = array();
 		$products = array();
-    // if(!$totalItems){
-    //   $this->Flash->error(__('Shopping cart is empty !! Please add some '));
-    // }
-    for($i=0;$i<count($allProducts);$i++){
-			  $qty=$allProducts[$i]['qty'];
 
-			  if($qty==1){
+    if(count($allProducts)<0){
+      $this->Flash->error(__('Shopping cart is empty !! Please add some '));
+    }else{
+      for($i=0;$i<count($allProducts);$i++){
+ 			 $qty=$allProducts[$i]['qty'];
+ 			  if($qty==1){
+ 				 $itemIds[]= $allProducts[$i]['itemid'];
+ 				 //$itemIds[]= $allProducts[$i]['itemid'];
+ 				//echo "  ".$allProducts[$i]['itemid']."<br>";
 
-				//  $itemIds[]= $allProducts[$i]['itemid'];
-				 $itemIds[]= $allProducts[$i]['itemid'];
-			//	echo "  ".$allProducts[$i]['itemid']."<br>";
-
-			  }else{
-				for($j=0;$j<$qty;$j++){
-					$itemIds[]= $allProducts[$i]['itemid'];
-			//	  echo "  ".$allProducts[$i]['itemid']."<br>";
-
-			  }//for j
-			  }//else
-		  }//for i
-      for($i=0; $i<count($itemIds); $i++){ //to check if all itemsid are innnnnnside
-		  print_r($itemIds[$i]);
-		  echo "<br>";
+ 			  }else{
+ 				for($j=0;$j<$qty;$j++){
+ 					 $itemIds[]= $allProducts[$i]['itemid'];
+ 				 // echo "  ".$allProducts[$i]['itemid']."<br>";
+ 			    }//for j
+ 			   }//else
+ 		   }
+     } //for i
+   for($i=0; $i<count($itemIds); $i++){ //to check if all itemsid are innnnnnside
+		// print_r($itemIds[$i]);
+		  // echo "<br>";
 		  $products[$i] = $this->Products->get($itemIds[$i], ['contain' => []]);
-		// $products[] = $this->Products->get($itemIds[$i], ['contain' => []]);
+
+	//	$products[] = $this->Products->get($itemIds[$i], ['contain' => []]);
 		  }
-      if($this->set('cartProducts',$products)){echo "successful"; }else{ echo "unscucessful";}
-        $this->set(compact('product'));
+      if($this->set('cartProducts',$products)){
+        $this->set('cartProducts',$products);
+      //  echo "successful <br>";
+        }else{
+        //      echo "unscucessful not";
+              }
+    //   $this->set(compact('product'));
 
     }
+
+    /**************************************************************/
     /**
      * Add method
      *

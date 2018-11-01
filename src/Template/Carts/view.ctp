@@ -30,7 +30,7 @@
 
         <tr class="success">
             <td colspan=3></td>
-            <td> <?php echo $total;?>
+            <!-- <td> <?php echo $total;?> -->
             </td>
         </tr>
         </tbody>

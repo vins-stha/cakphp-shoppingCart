@@ -12,49 +12,8 @@ class CartsController extends AppController {
     $this->loadModel('Carts');
       $this->loadComponent('RequestHandler');
   }
-
-public function addinTable($id){
-      $this->loadModel('Carts');
-       $this->autoRender = false;
-    /////////inserting into the cart table//////////7
-      $item = $this->Products->get($id);
-      $session = $this->request->session();
-    //    $session->write('Cart.itemsid',$id2);
-      $allProducts = $session->read('Cart');
-      // echo " count is from addinTable carts table ".count($allProducts);
-      $count = count($allProducts);
-  if(null!=$allProducts){
-        // echo "<br>if(allProducts is not null)<br>";
-        // echo "<b><br> no of items in cart ".$count;
-        if(array_search($id,array_column($allProducts, 'itemid')) !== false){
-      //  if(array_search($id,array_column($allProducts, 'itemid'))){
-            //if the id is already in list
-              $key = array_search($id,array_column($allProducts, 'itemid'));
-              $newqty = debug($allProducts[$key]['qty']);
-              $allProducts[$key]['qty']++;
-              $session->write('Cart',$allProducts);
-              debug($session->read('Cart'));
-        }
-        else{
-          // echo"<br><b>The id is not found but cart is not empty</b>";
-            $allProducts[] = array('itemid'=>$id,'qty'=> 1);
-            $session->write('Cart',$allProducts);
-            debug($session->read('Cart'));
-        }
-    }
-     else{///////////if cart is empty at first
-       $count = 0;
-           $allProducts[] = array('itemid'=>$id, 'qty' => 1 );
-          $session->write('Cart',$allProducts);
-          debug($session->read('Cart'));
-          }
-
-//  echo count($allProducts);
-  //getCount(); //??? why to check ??
-}//end of function
-
+///////////////////////////////////////////////////////
   public function getCount(){
-
     $this->autoRender = false;
     $session = $this->request->session();
     $allProducts = $session->read('Cart');
@@ -62,12 +21,70 @@ public function addinTable($id){
     for($i=0;$i< count($allProducts); $i++){
       $qtyCount +=$allProducts[$i]['qty'];
     }
-    $result = array('count' =>$qtyCount);
-    echo json_encode($result);
+  //  $myArray[] =  array(json_decode($this->addinTable($this->request->data)));
+    $myArray[]  = array('count' =>$qtyCount);
+    // debug($myArray);
+    // echo json_encode($myArray);
+    return $myArray;
     // debug($allProducts);
   }
-  public function viewCart(){
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  function ajaxTest(){
+  //  //header('Content-type: application/json;charset=utf-8');
+  //$mycount = (new CartsController())->getCount();
+  $newarray = array();
+  $newarray[] = array( 'name' =>'test');
+  $newarray[] = array('result'=>'test2');
+  $newarray[] = $this->getCount();
+  echo json_encode( $newarray);
+  exit;
+  }
+  //////////////////////////////////////////////////////////////////////////
+// public function addinTable($id){
+public function addinTable(){
+      $this->loadModel('Carts');
+      $this->autoRender = false;
+      $id = $this->request->data['id'];//////////edxtrea
+	    /////////inserting into the cart table//////////7
+      $item = $this->Products->get($id);
+      $session = $this->request->session();
+      $allProducts = $session->read('Cart');
+    //  $count = count($allProducts);
+  try { if(null!=$allProducts){
+        // echo "<br>if(allProducts is not null)<br>";  // echo "<b><br> no of items in cart ".$count;
+          if(array_search($id,array_column($allProducts,'itemid')) !== false){
+              //if the id is already in list
+              $key = array_search($id,array_column($allProducts, 'itemid'));
+              $newqty = $allProducts[$key]['qty'];
+              $allProducts[$key]['qty']++;
+            }
+          else{
+          // echo"<br><b>new product  id is found but cart is not empty</b>";
+            $allProducts[] = array('itemid'=>$id,'qty'=> 1);
+        //  debug(($allProducts));
+          //  $session->write('Cart',$allProducts);
+            }
+            }
+            else{///////////if cart is empty at first
 
+        //  $allProducts[] = array('itemid'=>$id, 'qty' => 1 );
+        $allProducts[] = array('itemid'=>$id, 'qty' => 1 );
+        print_r(json_encode($allProducts));
+          }
+        $session->write('Cart',$allProducts);
+        $array = array();
+        $array[] = array('message'=>'suceessfulll');
+        $array[] =  $this->getCount();
+        echo json_encode($array);
+    }catch(Exception $ex) {
+        $array = array('message'=>'unsuceessfulll');
+       echo json_encode($array);
+      }
+
+}//end of function
+
+  /*********************************************************/
+  public function viewCart(){
     $session = $this->request->session();
     $allProducts = $session->read('Cart');
     debug($allProducts);
@@ -93,24 +110,22 @@ public function addinTable($id){
           }
         }
       }
-        print_r($id); echo "<br>ids are :". $id;
-
+      //  print_r($id); echo "<br>ids are :". $id;
     }
-
   }
+  /*********************************************************/
   public function emptyCart(){
     $session = $this->request->session();
     $session->destroy();
     return $this->redirect(['controller'=>'products','action'=>'carts']);
   }
-
-  public function removeitem($id){
+  /*********************************************************/
+    public function removeitem($id){
   //  echo " pdocut id ".$id;
     $this->autoRender = false;
     $session = $this->request->session();
     $allProducts = $session->read('Cart');
-    debug($allProducts);
-
+  //  debug($allProducts);
   // if(array_search($key,array_column($allProducts, 'itemid'))){
   $key = array_search($id,array_column($allProducts, 'itemid'));
   if ($key ==0){
