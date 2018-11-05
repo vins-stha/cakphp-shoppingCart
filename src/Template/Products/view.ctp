@@ -11,12 +11,7 @@ if(!$this->Session->check('Cart')){
 }
 header('Content-Type: application/json');
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Product'), ['action' => 'add']) ?></li>
-    </ul>
-</nav>
+
 <div class="products view large-9 medium-8 columns content">
   <div class="row">
     <div class="col-lg-12">
@@ -29,7 +24,20 @@ header('Content-Type: application/json');
 </div
 <div class="row">
   <div class="col-lg-4 col-md-4"><!----main image --->
-         <img src="cinqueterre.jpg" class="img-circle" alt="" style="width:200px; height:200px; border:1px solid;">
+        
+		 <?php $path = $product->path.$product->image; echo  $this->Html->image($product->image,
+												array(
+												'class'=>'img-circle img-responsive',
+												'alt'=>$product->image,
+												  // 'width'=>'600px',
+												  // 'height'=>'660px'
+												
+												),
+												['fullBase'=>false],
+												array('escape'=>false)
+										
+								
+								);?>
     </div>
     <div class="col-lg-4 col-md-4">
       <h2><?= $product->name ?></h2>

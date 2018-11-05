@@ -136,21 +136,21 @@ public function addTCart($id) {
 
   }
 ########################3  ////////////////////////////////////////////////////
-    public function index()//list the products from the table
+ public function index()//list the products from the table
     {
         $this->paginate($this->Products);
         $products = $this->paginate($this->Products);
         $this->set(compact('products'));
     }
 ########################3  ////////////////////////////////////////////////////
-    public function view($id = null)
+ public function view($id = null)
       {
         $product = $this->Products->get($id, [
               'contain' => []
           ]);
          $this->set('product', $product);
         }
-
+########################3  ////////////////////////////////////////////////////
 public function carts()
 {
 		$session = $this->request->session();
@@ -205,9 +205,35 @@ public function carts()
      */
     public function add()
     {
+		
         $product = $this->Products->newEntity();
         if ($this->request->is('post')) {
+			 //debug($this->request->data);
             $product = $this->Products->patchEntity($product, $this->request->getData());
+			$image = $this->request->data['image'];
+			$destination_path = WWW_ROOT.'img\\';
+			
+			if($image['error']==0)
+			{
+				$image_name = $image['name']; //get name of original picture
+				//$image_name = explode('.',$image_name); //separate file name and extensions
+				
+			
+			 	//$image_name[0] = $id[0]['id']+1;//replace original file name by ID 
+				//$image_name = implode('.',$image_name);//join "file name" and extension to create new file name
+				
+				move_uploaded_file($image['tmp_name'],$destination_path.$image_name);//move uploaded file to this destination
+				$product['path']=$destination_path;
+				
+				$product['image']=$image_name;
+				$product['name'] = $this->request->data['name'];
+				$product['price'] = $this->request->data['price'];
+				
+				//debug($product);
+								
+			}
+			
+			//var_dump($image);
             if ($this->Products->save($product)) {
                 $this->Flash->success(__('The product has been saved.'));
 

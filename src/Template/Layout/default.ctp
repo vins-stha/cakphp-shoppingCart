@@ -56,7 +56,7 @@ for($i=0;$i< count($allProducts); $i++){
       <div class="container-fluid">
         <div class="navbar-header">
           <div>
-            <?= $this->Form->create('search',array('controller'=>'products','action'=>'search')); ?>
+            <?php echo $this->Form->create('search',array('controller'=>'products','action'=>'search')); ?>
             <?php  echo $this->Form->control('search', array('label' => false,
                "class" => "form-control input-medium", "placeholder" => __('Search example iphone 6')));?>
                <?php echo $this->Form->submit('search'); ?>
@@ -67,11 +67,12 @@ for($i=0;$i< count($allProducts); $i++){
                 <?php  echo $this->Form->control('Minimum Price', array('label' => false,'id'=>'min',
                         "class" => "form-control input-medium", "placeholder" => __('Search by minimum  price')));?>
                 <?php echo "</div>" ?> </div>
+				 <?= $this->Form->end(); ?>
           </div>
           <?php echo $this->Html->link('Apple Shopping Cart','/products/index',['class' => 'navbar-brand']);?>
         </div>
         <ul class="nav navbar-nav navbar-right">
-          <!-- <?= $this->Form->create('search',array('controller'=>'products','action'=>'search')); ?> -->
+          <!-- <?= $this->Form->create('search',array('controller'=>'proucts','action'=>'sarch')); ?> -->
             <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
 
           <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>

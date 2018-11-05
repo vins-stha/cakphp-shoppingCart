@@ -26,7 +26,19 @@
     <?php foreach ($cartProducts as $product): ?>
       <div class="col-sm-6 col-md-4">
         <div class="thumbnail">
-          <img src="cinqueterre.jpg" class="img-circle" alt="" style="width:100px; height:100px;">
+          <?php $path = $product->path.$product->image; echo  $this->Html->image($product->image,
+												array(
+												'class'=>' img-responsive',
+												'alt'=>$product->image,
+												  // 'width'=>'600px',
+												  // 'height'=>'660px'
+												
+												),
+												['fullBase'=>false],
+												array('escape'=>false)
+										
+								
+								);?>
           <?php //echo  $this->Html->link($this->Html->image($product->image))?>
         </div>
         <div class="caption"><h4>

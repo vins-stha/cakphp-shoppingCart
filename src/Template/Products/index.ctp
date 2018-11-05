@@ -10,22 +10,36 @@
       <table cellpadding="0" cellspacing="0">
         <tbody>
           <?php   foreach ($products as $product): ?>
-            
-            <div class="col-sm-6 col-md-4">
+              <div class="col-sm-6 col-md-4">
               <div class="thumbnail">
                 <img src="cinqueterre.jpg" class="img-circle" alt="" style="width:100px; height:100px;">
-                <?php //echo  $this->Html->link($this->Html->image($product->image))?>
+					<?php $path = $product->path.$product->image; echo  $this->Html->image($product->image,
+												array(
+												'class'=>'img-responsive',
+												'alt'=>$product->image,
+												 // 'width'=>'100px',
+												 // 'height'=>'60px'
+												
+												),
+												['fullBase'=>false],
+												array('escape'=>false)
+										
+								
+								);?>
               </div>
               <div class="caption"><h4>
                 <?= $this->Html->link(h($product->name), ['controller'=>'Products','action' => 'view', $product->id]); ?>
                   <h5>Price : <?= $product->price ?>€</h5>
               </div>
-              <p>
+			  <?= $this->Form->postLink(__('Remove'), ['action' => 'delete', $product->id], 
+			  ['confirm' => __('Are you sure you want to delete # {0}?', $product->id)]) ?> </li>
+             <p>
                <?php echo $this->Form->create(null, ['controller'=>'products','action'=>'addit']);?>
-               <input type='hidden' value='<?php echo($product->id);?>'name='productId'/>
-                        <?php echo $this->Form->end();?>
+					<input type='hidden' value='<?php echo($product->id);?>'name='productId'/>
+                <?php echo $this->Form->end();?>
              </p>
             </div>
+		 <?php endforeach; ?>
 
 <!----------------------------------------------<button class="bn-large" id="bn_cart">Add to Cart</button>----------------------------->
 <!-- <tr>
@@ -44,10 +58,12 @@
 <!------------------------------------------------------------------------------------------------------------------------------------>
 
 
-            <?php endforeach; ?>
+           
         </tbody>
     </table>
-    <div class="paginator">
+  
+</div>
+  <div class="paginator">
         <ul class="pagination">
             <?= $this->Paginator->first('<< ' . __('first')) ?>
             <?= $this->Paginator->prev('< ' . __('previous')) ?>
@@ -57,6 +73,5 @@
         </ul>
         <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
     </div>
-</div>
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 

@@ -21,10 +21,10 @@
    <?php echo $this->Form->button('Add to cart now',array('id'=>'Add_to_cart'));?>
    <?php echo $this->Html->link('Add',"/products/addit/".$product->id);?>
    <?php echo $this->Form->end();?>
- <?php }endforeach; ?>
+   <!-- <?php echo $this->Form->hidden('product_id',array('value'=>$product->id));?> -->
  </p>
 </div>
-
+<?php }endforeach ?>
 </div>
 <!-- <div class="paginator">
     <ul class="pagination">
